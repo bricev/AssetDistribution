@@ -1,7 +1,7 @@
 PHP AssetDistribution component
 ===========================
 
-PHP component that uploads and manage asset from remote social/content provider. 
+PHP component that uploads and manage asset from remote social/content provider.
 
 Currently handle video for YouTube.
 The component could easily handle video for Vimeo, Dailymotion, Metacafé... but also
@@ -11,16 +11,16 @@ Please feel free to integrate other asset/providers :)
 
 Vocabulary:
 
-  * a `Asset` defines the file (video, audio, document...) and its metadata. By 
-    itself, the asset is not related to any provider. Therefore, a `Provider` object 
-    or collection has to be affected to a asset to enable its corresponding 
+  * a `Asset` defines the file (video, audio, document...) and its metadata. By
+    itself, the asset is not related to any provider. Therefore, a `Provider` object
+    or collection has to be affected to a asset to enable its corresponding
     management.
 
   * `Provider` are composed of `Credentials` and a `Manager`. Providers also store
-    settings (static metadata such as webservice endpoints) and parameters (session 
-    dependant informations such as authentication token). 
+    settings (static metadata such as webservice endpoints) and parameters (session
+    dependant informations such as authentication token).
 
-    When serialized, provider objects register all parameters (settings should be 
+    When serialized, provider objects register all parameters (settings should be
     statically described inside their specialized class or coming from a setter
     so they can't be persisted eg. \Libcast\AssetDistribution\Provider\YoutubeProvider).
     This way, `Provider` objects can be persisted with anything but the required data
@@ -28,12 +28,12 @@ Vocabulary:
 
   * `ProviderCollection` serializable collection of `Provider` objects.
 
-  * `Credentials` objects handle component authentication on its corresponding 
+  * `Credentials` objects handle component authentication on its corresponding
     provider on behalf of a user. Users can be redirected on a dedicated login page
     and asked for aproval before any credential are given to the component.
 
   * `Manager` objects are used from `Asset` to handle the following methods:
-    - **save()** uploads the file if the `Asset` is new or persists the asset's 
+    - **save()** uploads the file if the `Asset` is new or persists the asset's
       metadata otherwise
     - **update()** edit the asset from the remote provider
     - **upload()** transfers the file on the remote provider
@@ -46,8 +46,10 @@ Install
 
 Use composer to install the composent dependancies :
 
-    cd /path/to/composent
-	php composer.phar install
+    git clone https://github.com/bricev/AssetDistribution.git
+    cd AssetDistribution
+    curl -sS https://getcomposer.org/installer | php
+    php composer.phar update
 
 
 Use it
@@ -135,3 +137,10 @@ $video
     ->setParameter('category',    22)
     ->save();
 ```
+
+API
+---
+
+Generate the API doc:
+
+    php vendor/sami/sami/sami.php update config/sami.php
