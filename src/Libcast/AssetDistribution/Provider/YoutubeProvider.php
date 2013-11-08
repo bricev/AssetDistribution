@@ -19,17 +19,18 @@ class YoutubeProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function configure() 
+    public function configure()
     {
         $this->setName('youtube');
 
         $this->setSettings(array(
             'authorize_url' => 'https://accounts.google.com/o/oauth2/auth',
+            'revoke_url'    => 'https://accounts.google.com/o/oauth2/revoke',
             'token_url'     => 'https://accounts.google.com/o/oauth2/token',
             'scope'         => implode(' ', array(
                 'https://www.googleapis.com/auth/youtube',
                 'https://www.googleapis.com/auth/youtube.readonly',
-                'https://www.googleapis.com/auth/youtube.upload', 
+                'https://www.googleapis.com/auth/youtube.upload',
             )),
             'upload_url'    => 'https://www.googleapis.com/upload/youtube/v3/videos',
             'data_url'      => 'https://www.googleapis.com/youtube/v3/videos',

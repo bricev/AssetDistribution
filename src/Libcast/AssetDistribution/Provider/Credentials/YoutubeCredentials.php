@@ -27,13 +27,13 @@ class YoutubeCredentials extends AbstractCredentials implements CredentialsInter
     const STATUS_LOGIN_SESSION   = 'session_login';
 
     /**
-     * 
+     *
      * @var string API access_token
      */
     protected $access_token;
 
     /**
-     * 
+     *
      * @var integer Date of the access_token expiration
      */
     protected $token_expiration_date;
@@ -94,7 +94,7 @@ class YoutubeCredentials extends AbstractCredentials implements CredentialsInter
 
                 if (isset($token['access_token'])) {
                     $this->setAccessToken(
-                            $token['access_token'], 
+                            $token['access_token'],
                             isset($token['expires_in']) ? $token['expires_in'] : 3600);
                 }
 
@@ -135,7 +135,7 @@ class YoutubeCredentials extends AbstractCredentials implements CredentialsInter
                     // no break: ask for user authorization again
                 } elseif (isset($token['access_token'])) {
                     $this->setAccessToken(
-                            $token['access_token'], 
+                            $token['access_token'],
                             isset($token['expires_in']) ? $token['expires_in'] : 3600);
 
                     $this->setStatus(self::STATUS_LOGIN_REFRESHED);
@@ -163,10 +163,30 @@ class YoutubeCredentials extends AbstractCredentials implements CredentialsInter
         return true;
     }
 
+    // https://developers.google.com/+/web/signin/#revoking_access_tokens_and_disconnecting_the_app
+    public function revoke()
+    {
+        $provider = $this->getProvider();
+        if ($token = $this->getAccessToken())
+        {
+            $request = new CurlRequest($provider->getLogger());
+            file_get_contents($provider->getSetting('revoke_url') . '?token=' . $token);
+            // $request->setUrl('%s?token=%s')
+            //     ->setArguments(array(
+            //         $provider->getSetting('revoke_url'),
+            //         $token
+            //     ))
+            //     ->get()
+            // ;
+            // var_dump(get_class_methods($request));die;
+
+        }
+    }
+
     /**
-     * Store Google's oAuth access_token in both the class attribute and a PHP 
+     * Store Google's oAuth access_token in both the class attribute and a PHP
      * session so that it can be used again later by the component.
-     * 
+     *
      * @param  string   $token       API access_token
      * @param  integer  $expires_in  Number of seconds before token expires
      */
@@ -193,7 +213,7 @@ class YoutubeCredentials extends AbstractCredentials implements CredentialsInter
 
     /**
      * Return the access_token if exists or `null` otherwise.
-     * 
+     *
      * @return string|null API access_token
      */
     public function getAccessToken()
@@ -202,8 +222,8 @@ class YoutubeCredentials extends AbstractCredentials implements CredentialsInter
 
         $id = $provider->getId();
 
-        $expiration = isset($_SESSION["youtube_token_expiration_$id"]) ? 
-                $_SESSION["youtube_token_expiration_$id"] : 
+        $expiration = isset($_SESSION["youtube_token_expiration_$id"]) ?
+                $_SESSION["youtube_token_expiration_$id"] :
                 $this->token_expiration_date;
 
         if ($expiration && $expiration <= time()) {
@@ -237,16 +257,16 @@ class YoutubeCredentials extends AbstractCredentials implements CredentialsInter
                 $this->setStatus(self::STATUS_LOGIN_SESSION);
                 return $this->access_token = $_SESSION["youtube_access_token_$id"];
 
-            default : 
+            default :
                 $provider->log('Impossible to retrieve access token');
                 return null;
         }
     }
 
     /**
-     * Store Google's oAuth refresh_token in both the class attribute and a PHP 
+     * Store Google's oAuth refresh_token in both the class attribute and a PHP
      * session so that it can be used again later by the component.
-     * 
+     *
      * @param string $token
      */
     protected function setRefreshToken($token)
@@ -264,7 +284,7 @@ class YoutubeCredentials extends AbstractCredentials implements CredentialsInter
 
     /**
      * Return the access_token if exists or `null` otherwise.
-     * 
+     *
      * @return string|null API refresh_token
      */
     public function getRefreshToken()
@@ -283,7 +303,7 @@ class YoutubeCredentials extends AbstractCredentials implements CredentialsInter
                 $provider->setParameter('refresh_token', $_SESSION["youtube_refresh_token_$id"]);
                 return $provider->getParameter('refresh_token');
 
-            default : 
+            default :
                 $provider->log('Impossible to retrieve refresh token');
                 return null;
         }
